@@ -1,0 +1,114 @@
+def mostrar_cabecalho():
+    print("**************************************")
+    print("      Lista de Compras  ")
+    print("**************************************\n")
+
+def listar_produtos(produtos):
+    if produtos:
+        print("Produtos cadastrados:")
+        for p in produtos:
+            print(f"ID: {p['id']} | Nome: {p['nome']} | Unidade: {p['unidade']} | Quantidade: {p['quantidade']} | Descrição: {p['descricao']}")
+        print("-" * 40)
+    else:
+        print("Nenhum produto cadastrado.\n" + "-" * 40)
+
+def mostrar_menu():
+    print("\nOpções:")
+    print("1 - Adicionar produto")
+    print("2 - Remover produto")
+    print("3 - Pesquisar produtos")
+    print("4 - Sair do programa")
+
+def adicionar_produto(produtos, id_atual):
+    nome = input("Digite o nome do produto: ")
+
+    # Exibindo opções de unidade de medida
+    unidades = ["Quilograma", "Grama", "Litro", "Mililitro", "Unidade", "Metro", "Centímetro"]
+    print("Escolha a unidade de medida:")
+    for indice, unidade in enumerate(unidades, start=1):
+        print(f"{indice} - {unidade}")
+    
+    try:
+        opcao_unidade = int(input("Opção: "))
+        if opcao_unidade < 1 or opcao_unidade > len(unidades):
+            print("Unidade inválida. Produto não adicionado.")
+            return id_atual
+    except ValueError:
+        print("Entrada inválida. Produto não adicionado.")
+        return id_atual
+
+    unidade_escolhida = unidades[opcao_unidade - 1]
+    
+    try:
+        quantidade = float(input("Digite a quantidade: "))
+    except ValueError:
+        print("Quantidade inválida. Produto não adicionado.")
+        return id_atual
+
+    descricao = input("Digite a descrição do produto: ")
+
+    # Criando o dicionário do produto com ID automático
+    produto = {
+        "id": id_atual,
+        "nome": nome,
+        "unidade": unidade_escolhida,
+        "quantidade": quantidade,
+        "descricao": descricao
+    }
+    produtos.append(produto)
+    print("Produto adicionado com sucesso!")
+    return id_atual + 1
+
+def remover_produto(produtos):
+    try:
+        id_remover = int(input("Digite o ID do produto a remover: "))
+    except ValueError:
+        print("Entrada inválida.")
+        return
+
+    for produto in produtos:
+        if produto['id'] == id_remover:
+            produtos.remove(produto)
+            print("Produto removido com sucesso!")
+            return
+    print("Produto não encontrado.")
+
+def pesquisar_produto(produtos):
+    termo = input("Digite o nome ou parte do nome do produto: ").lower()
+    resultados = [p for p in produtos if termo in p['nome'].lower()]
+
+    if resultados:
+        print(f"\nForam encontrados {len(resultados)} produto(s):")
+        for p in resultados:
+            print(f"ID: {p['id']} | Nome: {p['nome']} | Unidade: {p['unidade']} | Quantidade: {p['quantidade']} | Descrição: {p['descricao']}")
+    else:
+        print("Nenhum produto encontrado.")
+
+def main():
+    produtos = []
+    id_automatico = 1
+
+    while True:
+        print("\n" * 2)  # Espaço para melhorar a visualização
+        mostrar_cabecalho()
+        listar_produtos(produtos)
+        mostrar_menu()
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            id_automatico = adicionar_produto(produtos, id_automatico)
+        elif opcao == "2":
+            remover_produto(produtos)
+        elif opcao == "3":
+            pesquisar_produto(produtos)
+        elif opcao == "4":
+            print("Encerrando o programa...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+        input("\nPressione Enter para continuar...")
+
+if __name__ == "__main__":
+    main()
